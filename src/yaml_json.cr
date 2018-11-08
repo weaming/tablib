@@ -42,26 +42,41 @@ module JsonFormatter
   end
 
   def parse(vs : Array) : Array(HashType)
-    vs.map { |v| parse_json(v).as(HashType) }
+    vs.map { |v| parse(v).as(HashType) }
   end
 
   def parse(vs : Hash)
     rv = Hash(String, HashType).new
     vs.reduce(rv) do |memo, x|
       k, v = x
-      memo[k.to_s] = parse_json(v)
+      memo[k.to_s] = parse(v)
       memo
     end
     rv
   end
 
-  def parse_json(x : JSON::Any) : HashType
+  def parse(x : JSON::Any) : HashType
     {% begin %}
        case
         {% for t in ["h", "a", "s", "i", "i64", "f", "f32"] %}
         when x.as_{{t.id}}?
           v = x.as_{{t.id}}
-          JsonFormatter.parse(v)
+          parse(v)
+        {% end %}
+        when x.as_nil == nil?
+          v = nil
+          nil
+      end
+      {% end %}
+  end
+
+  def parse(x : YAML::Any) : HashType
+    {% begin %}
+       case
+        {% for t in ["h", "a", "s", "i", "i64", "f"] %} # missing f32 in YAML::Any
+        when x.as_{{t.id}}?
+          v = x.as_{{t.id}}
+          parse(v)
         {% end %}
         when x.as_nil == nil?
           v = nil
@@ -80,8 +95,6 @@ struct JSON::Any
 end
 
 module Tablib
-  extend JsonFormatter
-
   def self.yaml_json(path : String)
     text = read_file path
     if text.strip.starts_with? /[[{]/ # is json
@@ -92,8 +105,7 @@ module Tablib
         exit 3
       end
 
-      # output yaml
-      data = JsonFormatter.parse_json(data)
+      data = JsonFormatter.parse(data)
       puts YAML.dump(data)
     else # is yaml
       begin
@@ -103,8 +115,9 @@ module Tablib
         exit 4
       end
 
-      # output json
-      # TODO
+      data = JsonFormatter.parse(data)
+      puts typeof(data)
+      # puts JSON.dumps(data)
     end
   end
 
