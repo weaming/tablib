@@ -1,0 +1,10 @@
+/docs/
+/lib/
+/bin/
+/.shards/
+*.dwarf
+
+*.json
+*.yml
+*.csv
+.idea/
