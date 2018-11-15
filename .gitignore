@@ -6,5 +6,6 @@
 
 *.json
 *.yml
+!shard.yml
 *.csv
 .idea/

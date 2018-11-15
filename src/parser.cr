@@ -101,6 +101,24 @@ module JSONFormatter
   end
 
   def to_csv(x : Array(Hash(String, BaseTypes))) : String
+    header = Array(String).new
+    x[0].each do |kv|
+      header.push kv[0] # push key
+    end
+
+    result = CSV.build do |csv|
+      x.each do |row|
+        row_values = Array(String).new
+
+        header.each do |k|
+          row.push row[k]
+        end
+
+        csv.row *row_values
+      end
+    end
+
+    ""
   end
 end
 
@@ -149,8 +167,8 @@ module Tablib
       end
 
       # output csv
-      # TODO
-
+      str = JSONFormatter.to_csv data
+      puts str
     else # is csv
       begin
         data = CSV.parse text
