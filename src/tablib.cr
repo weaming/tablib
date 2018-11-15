@@ -1,4 +1,4 @@
-require "./yaml_json"
+require "./parser"
 require "./cli"
 
 # TODO: Write documentation for `Tablib`

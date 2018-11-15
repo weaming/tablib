@@ -1,5 +1,6 @@
 require "json"
 require "yaml"
+require "csv"
 
 def read_file(path : String) : String
   begin
@@ -15,7 +16,7 @@ enum TargetType
   YAML
 end
 
-module JsonFormatter
+module JSONFormatter
   extend self
 
   alias BaseTypes = String | Bool | Int32 | Int64 | Float64 | Float32 | Nil
@@ -84,12 +85,23 @@ module JsonFormatter
       end
       {% end %}
   end
+
+  def parse_csv(x : Array(Array(String))) : Array(Hash(String, BaseTypes))
+    header = x[0]
+    rv = Array.new(x.size - 1, Hash(String, BaseTypes).new)
+    (1...x.size).each do |i|
+      row = x[i]
+      (0...row.size).each do |j|
+        key = header[j]
+        value = row[j]
+        rv[i - 1][key] = value
+      end
+    end
+    rv
+  end
 end
 
 struct JSON::Any
-  def self.to_yaml : String
-  end
-
   def self.to_csv : String
   end
 end
@@ -97,6 +109,10 @@ end
 module Tablib
   def self.yaml_json(path : String)
     text = read_file path
+    if text.size == 0
+      exit 8
+    end
+
     if text.strip.starts_with? /[[{]/ # is json
       begin
         data = JSON.parse text
@@ -105,8 +121,8 @@ module Tablib
         exit 3
       end
 
-      data = JsonFormatter.parse(data)
-      puts YAML.dump(data)
+      data = JSONFormatter.parse(data)
+      puts data.to_yaml
     else # is yaml
       begin
         data = YAML.parse text
@@ -115,14 +131,17 @@ module Tablib
         exit 4
       end
 
-      data = JsonFormatter.parse(data)
-      puts typeof(data)
-      # puts JSON.dumps(data)
+      data = JSONFormatter.parse(data)
+      puts data.to_pretty_json
     end
   end
 
   def self.csv_json(path : String)
     text = read_file path
+    if text.size == 0
+      exit 8
+    end
+
     if text.starts_with? /\[\{/ # is json
       begin
         data = JSON.parse text
@@ -134,16 +153,16 @@ module Tablib
       # output csv
       # TODO
 
-    else # is yaml
+    else # is csv
       begin
-        data = YAML.parse text
+        data = CSV.parse text
       rescue e
         puts e
         exit 4
       end
 
-      # output json
-      # TODO
+      data = JSONFormatter.parse_csv data
+      puts data.to_pretty_json
     end
   end
 end

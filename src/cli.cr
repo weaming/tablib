@@ -1,4 +1,4 @@
-require "./yaml_json"
+require "./parser"
 require "clim"
 
 class Cli < Clim
