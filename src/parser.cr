@@ -99,10 +99,8 @@ module JSONFormatter
     end
     rv
   end
-end
 
-struct JSON::Any
-  def self.to_csv : String
+  def to_csv(x : Array(Hash(String, BaseTypes))) : String
   end
 end
 
