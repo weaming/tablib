@@ -20,7 +20,7 @@ TODO: Write usage instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/tablib/fork>)
+1. Fork it (<https://github.com/weaming/tablib/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -28,4 +28,4 @@ TODO: Write usage instructions here
 
 ## Contributors
 
-- [weaming](https://github.com/weaming) Jiadeng Ruan - creator, maintainer
+- [weaming](https://github.com/weaming) weaming - creator, maintainer
