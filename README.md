@@ -6,7 +6,20 @@ Parse 2d tabular data bettwen YAML, JSON, CSV.
 
 ## Installation
 
-TODO: Write installation instructions here
+### Mac
+
+```
+brew tap weaming/homebrew-tap
+brew install tabular
+```
+
+### Manual
+
+```
+git clone https://github.com/weaming/tablib
+crystal build --release src/tabular.cr
+mv tabular /usr/local/bin
+```
 
 ## Usage
 
