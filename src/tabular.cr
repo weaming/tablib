@@ -11,7 +11,7 @@ class Cli < Clim
     desc DESC.size > 0 ? "#{PROGRAM} -- #{DESC}" : "#{PROGRAM} CLI tool."
     usage "#{PROGRAM} [options] [arguments] ..."
     version VERSION
-    option "-f FILE", "--file=FILE", type: String, desc: "The file", default: "."
+    option "-f FILE", "--file=FILE", type: String, desc: "The file", default: "/dev/stdin"
     option "-t TYPE", "--type", type: String, desc: "Allow CSV or YAML", default: "YAML"
     option "-i", "--indent", type: Int32, default: 2
 
