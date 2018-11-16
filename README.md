@@ -45,3 +45,7 @@ $ ./tabular --help
 ## Contributors
 
 - [weaming](https://github.com/weaming) weaming - creator, maintainer
+
+## TODO
+
+* [ ] JSON output custom indent
