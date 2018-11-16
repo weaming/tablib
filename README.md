@@ -10,7 +10,23 @@ TODO: Write installation instructions here
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+$ ./tabular --help
+
+  tabular -- Convert between CSV, JSON, YAML. The JSON is the bridge betwwen CSV and YAML.
+
+  Usage:
+
+    tabular [options] [arguments] ...
+
+  Options:
+
+    -f FILE, --file=FILE             The file [type:String] [default:"/dev/stdin"]
+    -t TYPE, --type                  Allow CSV or YAML [type:String] [default:"YAML"]
+    -i, --indent                     Option description. [type:Int32] [default:2]
+    --help                           Show this help.
+    --version                        Show version.
+```
 
 ## Development
 
