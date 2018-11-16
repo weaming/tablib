@@ -1,3 +1,5 @@
+[![GitHub release](https://img.shields.io/github/release/weaming/tablib.svg)](https://github.com/weaming/tablib/releases)
+
 # Tablib
 
 Parse 2d tabular data bettwen YAML, JSON, CSV.
