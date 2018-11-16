@@ -20,7 +20,7 @@ module JSONFormatter
   extend self
 
   alias BaseTypes = String | Bool | Int32 | Int64 | Float64 | Float32 | Nil
-  alias HashType = BaseTypes | Array(HashType) | Hash(String, HashType)
+  alias TabAny = BaseTypes | Array(TabAny) | Hash(String, TabAny)
 
   def parse(v : String)
     v.to_s
@@ -42,12 +42,12 @@ module JSONFormatter
     nil
   end
 
-  def parse(vs : Array) : Array(HashType)
-    vs.map { |v| parse(v).as(HashType) }
+  def parse(vs : Array) : Array(TabAny)
+    vs.map { |v| parse(v).as(TabAny) }
   end
 
   def parse(vs : Hash)
-    rv = Hash(String, HashType).new
+    rv = Hash(String, TabAny).new
     vs.reduce(rv) do |memo, x|
       k, v = x
       memo[k.to_s] = parse(v)
@@ -56,7 +56,7 @@ module JSONFormatter
     rv
   end
 
-  def parse(x : JSON::Any) : HashType
+  def parse(x : JSON::Any) : TabAny
     {% begin %}
        case
         {% for t in ["h", "a", "s", "i", "i64", "f", "f32"] %}
@@ -71,7 +71,7 @@ module JSONFormatter
       {% end %}
   end
 
-  def parse(x : YAML::Any) : HashType
+  def parse(x : YAML::Any) : TabAny
     {% begin %}
        case
         {% for t in ["h", "a", "s", "i", "i64", "f"] %} # missing f32 in YAML::Any
@@ -100,25 +100,60 @@ module JSONFormatter
     rv
   end
 
-  def to_csv(x : Array(Hash(String, BaseTypes))) : String
-    header = Array(String).new
-    x[0].each do |kv|
-      header.push kv[0] # push key
-    end
-
-    result = CSV.build do |csv|
-      x.each do |row|
-        row_values = Array(String).new
-
-        header.each do |k|
-          row.push row[k]
+  def flat_hash(row : TabAny) : Hash(String, BaseTypes)
+    new_row = Hash(String, BaseTypes).new
+    case row
+    # only accept Hash
+    when Hash
+      row.each do |(k, v)|
+        case v
+        # only accept BaseTypes as value
+        when BaseTypes
+          new_row[k] = v
+        else
+          puts "type of hash value #{v} is not BaseTypes, key is #{k}"
+          exit 1
         end
-
-        csv.row *row_values
       end
     end
 
-    ""
+    new_row
+  end
+
+  def to_csv(x : Array(TabAny)) : String
+    new_x = Array(Hash(String, BaseTypes)).new
+
+    # parse type
+    x.each do |row|
+      flated = flat_hash(row)
+      if flated.size > 0
+        new_x.push flated
+      end
+    end
+
+    # generate header
+    header = Array(String).new
+    new_x[0].each do |(k, v)|
+      header.push k # push key
+    end
+
+    result = CSV.build do |csv|
+      # write header
+      csv.row header
+
+      # write body
+      new_x.each do |row|
+        row_values = Array(BaseTypes).new
+
+        header.each do |k|
+          row_values.push row[k].as(BaseTypes)
+        end
+
+        csv.row row_values
+      end
+    end
+
+    result
   end
 end
 
@@ -126,7 +161,7 @@ module Tablib
   def self.yaml_json(path : String)
     text = read_file path
     if text.size == 0
-      exit 8
+      exit 3
     end
 
     if text.strip.starts_with? /[[{]/ # is json
@@ -134,7 +169,7 @@ module Tablib
         data = JSON.parse text
       rescue e
         puts e
-        exit 3
+        exit 4
       end
 
       data = JSONFormatter.parse(data)
@@ -144,7 +179,7 @@ module Tablib
         data = YAML.parse text
       rescue e
         puts e
-        exit 4
+        exit 5
       end
 
       data = JSONFormatter.parse(data)
@@ -155,26 +190,33 @@ module Tablib
   def self.csv_json(path : String)
     text = read_file path
     if text.size == 0
-      exit 8
+      exit 3
     end
 
-    if text.starts_with? /\[\{/ # is json
+    if text.starts_with? /[[{]/ # is json
       begin
         data = JSON.parse text
       rescue e
         puts e
-        exit 3
+        exit 4
       end
 
       # output csv
-      str = JSONFormatter.to_csv data
-      puts str
+      data = JSONFormatter.parse data
+      case data
+      when Array(JSONFormatter::TabAny)
+        str = JSONFormatter.to_csv data
+        puts str
+      else
+        puts "invalid csv 2d structure"
+        exit 6
+      end
     else # is csv
       begin
         data = CSV.parse text
       rescue e
         puts e
-        exit 4
+        exit 5
       end
 
       data = JSONFormatter.parse_csv data
