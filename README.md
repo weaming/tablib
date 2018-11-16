@@ -1,6 +1,6 @@
-# tablib
+# Tablib
 
-TODO: Write a description here
+Parse 2d tabular data bettwen YAML, JSON, CSV.
 
 ## Installation
 
@@ -12,7 +12,9 @@ TODO: Write usage instructions here
 
 ## Development
 
-TODO: Write development instructions here
+1. `git clone`
+1. `shards install`
+1. `crystal run src/tablib.cr -- -f test.json -t csv`
 
 ## Contributing
 
@@ -24,12 +26,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-github-user](https://github.com/your-github-user) Jiadeng Ruan - creator, maintainer
-
-## TODO
-
-- [ ] extend JSON module
-- [ ] extend YAML module
-- [ ] universal json like structure
-
-
+- [weaming](https://github.com/weaming) Jiadeng Ruan - creator, maintainer
