@@ -16,7 +16,7 @@ TODO: Write usage instructions here
 
 1. `git clone`
 1. `shards install`
-1. `crystal run src/tablib.cr -- -f test.json -t csv`
+1. `crystal run src/tabular.cr -- -f test.json -t csv`
 
 ## Contributing
 
