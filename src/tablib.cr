@@ -1,5 +1,4 @@
 require "./parser"
-require "./cli"
 
 # Parse betwwen YAML, JSON, CSV
 module Tablib

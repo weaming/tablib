@@ -11,11 +11,6 @@ def read_file(path : String) : String
   end
 end
 
-enum TargetType
-  JSON
-  YAML
-end
-
 module JSONFormatter
   extend self
 

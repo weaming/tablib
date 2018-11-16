@@ -6,7 +6,7 @@ authors:
 
 targets:
   tablib:
-    main: src/tablib.cr
+    main: src/tabular.cr
 
 crystal: 0.26.1
 

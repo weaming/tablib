@@ -9,3 +9,5 @@
 !shard.yml
 *.csv
 .idea/
+
+tabular
