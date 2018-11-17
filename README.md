@@ -9,7 +9,7 @@ Parse 2d tabular data bettwen YAML, JSON, CSV.
 ### Mac
 
 ```
-brew tap weaming/homebrew-tap
+brew tap weaming/tap
 brew install tabular
 ```
 
@@ -39,6 +39,16 @@ $ ./tabular --help
     -i, --indent                     Option description. [type:Int32] [default:2]
     --help                           Show this help.
     --version                        Show version.
+```
+
+### Interact with VIM
+
+Add to your `.vimrc`
+
+```
+" brew install tabular
+nnoremap <a-l> :%!tabular -f /dev/stdin -t yaml<CR>
+nnoremap <a-c> :%!tabular -f /dev/stdin -t csv<CR>
 ```
 
 ## Development
