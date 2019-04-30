@@ -26,7 +26,7 @@ mv tabular /usr/local/bin
 ```
 $ ./tabular --help
 
-  tabular -- Convert between CSV, JSON, YAML. The JSON is the bridge betwwen CSV and YAML.
+  tabular -- Convert between CSV, JSON, YAML. The JSON is the bridge between CSV and YAML.
 
   Usage:
 
